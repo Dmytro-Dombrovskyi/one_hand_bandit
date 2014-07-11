@@ -1,8 +1,8 @@
 
-QT      += core gui widgets
-QMAKE_CXXFLAGS += -std=c++11
+QT               += core gui widgets
+QMAKE_CXXFLAGS   += -std=c++11
 
-TARGET   += OneHandBandit
+#TARGET   += OneHandBandit
 TEMPLATE += app
 
 
@@ -14,4 +14,4 @@ SOURCES += \
     Bandit_main.cpp
 
 RESOURCES += \
-    my_resource.qrc
+    images.qrc

@@ -16,9 +16,9 @@ BanditWindow::BanditWindow(QWidget *parent) :
     label_3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     label_3->setMinimumSize(100, 100);
 
-    set_pictures();
+    //set_pictures();
 
-    label_1->setPixmap(picture_1);
+    //label_1->setPixmap(picture_1);
 
     quit_button = new QPushButton(tr("&Quit"));
 
@@ -73,11 +73,11 @@ void BanditWindow::quit_game()
 //                                          Qt::KeepAspectRatio));
 //    }
 //}
-void BanditWindow::set_pictures()
-{
-    picture_1->load(belka_1.png);
+//void BanditWindow::set_pictures()
+//{
+ //   picture_1->load("belka_1.png");
     //picture_2;
     //picture_3;
     //picture_4;
     //picture_5;
-}
+//}

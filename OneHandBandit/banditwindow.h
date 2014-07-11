@@ -33,12 +33,12 @@ private:
     QPushButton *quit_button;
 
     // pictures
-    QSharedPointer<QPixmap> picture_1;
+ //   QSharedPointer<QPixmap> picture_1;
 //    QSharedPointer<QPixmap> picture_2;
 //    QSharedPointer<QPixmap> picture_3;
 //    QSharedPointer<QPixmap> picture_4;
 //    QSharedPointer<QPixmap> picture_5;
-    void set_pictures();
+ //   void set_pictures();
 };
 
 #endif // BANDITWINDOW_H

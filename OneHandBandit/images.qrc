@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/belka_5.png</file>
+        <file>images/belka_4.png</file>
+        <file>images/belka_3.png</file>
+        <file>images/belka_2.png</file>
+        <file>images/belka_1.png</file>
+    </qresource>
+</RCC>
