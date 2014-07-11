@@ -12,3 +12,6 @@ HEADERS += \
 SOURCES += \
     banditwindow.cpp \
     Bandit_main.cpp
+
+RESOURCES += \
+    my_resource.qrc

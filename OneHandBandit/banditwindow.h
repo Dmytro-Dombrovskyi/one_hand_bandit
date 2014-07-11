@@ -20,26 +20,25 @@ public:
 signals:    
 
 public slots:
-    void quit_game();
-    void load_picture();
+    void quit_game();    
 
 protected:
-    void resizeEvent(QResizeEvent *event);
+//    void resizeEvent(QResizeEvent *event);
 
 private:
-    QLabel **label;
+    QLabel *label_1;
+    QLabel *label_2;
+    QLabel *label_3;
 
     QPushButton *quit_button;
-    QPushButton *load_picture_button;
-    //QPushButton *game_button;
 
     // pictures
-    QSharedPointer<QPixmap> *pictures;
-
-   // QPixmap *picture_2;
-   // QPixmap *picture_3;
-   // QPixmap *picture_4;
-   // QPixmap *picture_5;
+    QSharedPointer<QPixmap> picture_1;
+//    QSharedPointer<QPixmap> picture_2;
+//    QSharedPointer<QPixmap> picture_3;
+//    QSharedPointer<QPixmap> picture_4;
+//    QSharedPointer<QPixmap> picture_5;
+    void set_pictures();
 };
 
 #endif // BANDITWINDOW_H

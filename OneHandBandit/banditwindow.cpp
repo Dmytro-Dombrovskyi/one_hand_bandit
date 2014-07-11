@@ -1,44 +1,46 @@
 #include "banditwindow.h"
 
 BanditWindow::BanditWindow(QWidget *parent) :
-    QWidget(parent), label(nullptr), quit_button(nullptr),
-    load_picture_button(nullptr)
+    QWidget(parent)
 {
-    const int lbl_num = 3;
-    *label = new QLabel[lbl_num];
-    for(int i = 0; i < lbl_num; ++i)
-    {
-        label[i] = new QLabel;
-        label[i]->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-        label[i]->setAlignment(Qt::AlignCenter);
-        label[i]->setMinimumSize(100, 100);
-    }
+    label_1 = new QLabel;
+    label_1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    label_1->setMinimumSize(100, 100);
+    //label_1->setPixmap();
+
+    label_2 = new QLabel;
+    label_2->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    label_2->setMinimumSize(100, 100);
+
+    label_3 = new QLabel;
+    label_3->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    label_3->setMinimumSize(100, 100);
+
+    set_pictures();
+
+    label_1->setPixmap(picture_1);
 
     quit_button = new QPushButton(tr("&Quit"));
-    //game_button = new QPushButton(tr("Go"));
-    load_picture_button = new QPushButton(tr("&Load"));
-
-    const int pict_num = 5;
-    pictures = new QSharedPointer<QPixmap>[pict_num];
-    for(int i = 0; i < pict_num; ++i)
-    {
-        pictures[i] = QSharedPointer<QPixmap>::create();
-    }
-
-
 
     connect(quit_button, SIGNAL(clicked()),
             this, SLOT(quit_game()) );
-    connect(load_picture_button, SIGNAL(clicked()),
-            this, SLOT(load_picture()) );
 
+    QHBoxLayout * horizontal_layout_1 = new QHBoxLayout;
 
-    QGridLayout *layout = new QGridLayout;    
-    layout->addWidget(label, 0, 0, 1, 2);
-    layout->addWidget(quit_button, 1, 0);
-    layout->addWidget(load_picture_button, 1, 1);
+    horizontal_layout_1->addWidget(label_1);
+    horizontal_layout_1->addWidget(label_2);
+    horizontal_layout_1->addWidget(label_3);
 
-    setLayout(layout);
+    QHBoxLayout * horizontal_layout_2 = new QHBoxLayout;
+
+    horizontal_layout_2->addWidget(quit_button);
+
+    QGridLayout * main_layout = new QGridLayout;
+
+    main_layout->addLayout(horizontal_layout_1, 0, 0);
+    main_layout->addLayout(horizontal_layout_2, 1, 0);
+
+    setLayout(main_layout);
     setWindowTitle(tr("one hand bandit"));
 }
 // quit
@@ -52,48 +54,30 @@ void BanditWindow::quit_game()
     if(answer == QMessageBox::Yes)
         QApplication::instance()->quit();
 }
-// load new picture for the game
-void BanditWindow::load_picture()
+// resize picture
+//void BanditWindow::resizeEvent(QResizeEvent *event)
+//{
+//    QWidget::resizeEvent(event);
+
+//    double width_ration =
+//            static_cast<double>(event->size().height()) / event->oldSize().height();
+//    double height_ration =
+//            static_cast<double>(event->size().width()) / event->oldSize().width();
+//    int new_width = label[0]->width() * width_ration;
+//    int new_height = label[0]->height() * height_ration;
+
+
+//    if(label[0]->pixmap())
+//    {
+//        label[0]->setPixmap(picture_1->scaled(new_width, new_height,
+//                                          Qt::KeepAspectRatio));
+//    }
+//}
+void BanditWindow::set_pictures()
 {
-    QString fileNameLoad =
-            QFileDialog::getOpenFileName(this, tr("file name: "), "",
-                                        ("Png files (*.png);;\
-                                          Jpeg files (*.jpeg *.jpg);;\
-                                          Bmp files (*.bmp)") );
-    if(fileNameLoad != "")
-    {
-        pictures->load(fileNameLoad);
-
-        if(!pictures->isNull())
-        {
-            int w = label->width();
-            int h = label->height();
-
-            label->setPixmap(pictures->scaled(w,h,Qt::KeepAspectRatio));
-        }
-        else
-        {
-            QMessageBox::information(this, "Can't load file!",
-                                     tr("Fail file to load %1.").arg(fileNameLoad));
-            return;
-        }
-    }
-}
-
-void BanditWindow::resizeEvent(QResizeEvent *event)
-{
-    QWidget::resizeEvent(event);
-
-    double width_ration =
-            static_cast<double>(event->size().height()) / event->oldSize().height();
-    double height_ration =
-            static_cast<double>(event->size().width()) / event->oldSize().width();
-    int new_width = label->width() * width_ration;
-    int new_height = label->height() * height_ration;
-
-    if(label->pixmap())
-    {
-        label->setPixmap(pictures->scaled(new_width, new_height,
-                                          Qt::KeepAspectRatio));
-    }
+    picture_1->load(belka_1.png);
+    //picture_2;
+    //picture_3;
+    //picture_4;
+    //picture_5;
 }
