@@ -26,26 +26,17 @@ public slots:
     void start_game();
 
 protected:
-    void resizeEvent(QResizeEvent *event);
+   //void resizeEvent(QResizeEvent *event);
 
 private:
-    QLabel *label_1;
-    QLabel *label_2;
-    QLabel *label_3;
+    QVector<QLabel*> label;
+    QVector<QSharedPointer<QPixmap> > pictures;
 
     QPushButton *quit_button;
     QPushButton *start_game_button;
 
-    // pictures
-    QSharedPointer<QPixmap> picture_1;
-    QSharedPointer<QPixmap> picture_2;
-    QSharedPointer<QPixmap> picture_3;
-    QSharedPointer<QPixmap> picture_4;
-    QSharedPointer<QPixmap> picture_5;
-
-    void set_pictures();
+    void set_pictures(const int = 5);
     void set_labels(const int lb_size = 200);
-    void load_pictures_to_labels();
 
     void set_picture(const int num_label, const int num_picture);
 };
