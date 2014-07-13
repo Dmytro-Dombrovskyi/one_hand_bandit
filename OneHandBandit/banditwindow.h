@@ -30,7 +30,7 @@ protected:
 
 private:
     QVector<QLabel*> label;
-    QVector<QSharedPointer<QPixmap> > pictures;
+    QVector<QString> picture_path;
 
     QPushButton *quit_button;
     QPushButton *start_game_button;
@@ -38,7 +38,7 @@ private:
     void set_pictures(const int = 5);
     void set_labels(const int lb_size = 200);
 
-    void set_picture(const int num_label, const int num_picture);
+    //void set_picture(const int num_label, const int num_picture);
 };
 
 #endif // BANDITWINDOW_H

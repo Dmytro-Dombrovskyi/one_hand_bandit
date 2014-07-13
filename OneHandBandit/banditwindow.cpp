@@ -38,24 +38,24 @@ BanditWindow::BanditWindow(QWidget *parent) :
 // set pictures
 void BanditWindow::set_pictures(const int num_of_pictures)
 {
-    QString filename;
-    for(int i = 0; i < num_of_pictures; ++i)
+    for(int i = 1; i <= num_of_pictures; ++i)
     {
-        pictures.push_back(QSharedPointer<QPixmap>::create());
-        filename = (":/images/images/belka_" +
-                    QString::number(i) + ".png");
-        pictures.at(i)->load(filename);
+        picture_path.push_back(":/images/images/belka_" +
+                               QString::number(i) + ".png");
     }
 }
 void BanditWindow::set_labels(const int lb_size)
 {
+    //QLabel temp;
     for(int i = 0; i < 3; ++i)
     {
-        label.append(new QLabel);
-        label.at(i)->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-        label.at(i)->setMinimumSize(lb_size, lb_size);
-        if(!pictures.at(i)->isNull())
-            label.at(i)->setPixmap(*pictures.at(i));
+        label.push_back(new QLabel);
+        label[i]->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+        label[i]->setMinimumSize(lb_size, lb_size);
+        if(!picture_path.at(i).isNull())
+        {
+            label[i]->setPixmap(QPixmap(picture_path.at(i)));
+        }
     }
 }
 // resize picture
@@ -111,12 +111,12 @@ void BanditWindow::quit_game()
 void BanditWindow::start_game()
 {
     int num_picture = 0;
-    for(int num_label = 1; num_label < 3; ++num_label)
+    for(int num_label = 0; num_label < 3; ++num_label)
     {
-        num_picture = static_cast<int>(qrand() % 5) + 1;
+        num_picture = static_cast<int>(qrand() % 5);
 
-        if(!pictures.at(num_label)->isNull())
-            label.at(num_label)->setPixmap(*pictures.at(num_picture));
+        if(!picture_path.at(num_picture).isNull())
+            label[num_label]->setPixmap(QPixmap(picture_path.at(num_picture)));
     }
 }
 
