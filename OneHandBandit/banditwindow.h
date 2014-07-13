@@ -26,9 +26,15 @@ public slots:
     void start_game();
 
 protected:
-   //void resizeEvent(QResizeEvent *event);
+ //  void resizeEvent(QResizeEvent *event);
 
 private:
+    QLabel *scores_label;
+    QLabel *tryes_label;
+
+    static int scores_counter_;
+    static int tryes_counter_;
+
     QVector<QLabel*> label;
     QVector<QString> picture_path;
 
@@ -36,7 +42,7 @@ private:
     QPushButton *start_game_button;
 
     void set_pictures(const int = 5);
-    void set_labels(const int lb_size = 200);
+    void set_labels(const int lb_size = 100);
 
     //void set_picture(const int num_label, const int num_picture);
 };

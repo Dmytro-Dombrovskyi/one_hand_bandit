@@ -1,13 +1,20 @@
 #include "banditwindow.h"
 
+// initial static variables
+int BanditWindow::scores_counter_ = 0;
+int BanditWindow::tryes_counter_ = 0;
+
 BanditWindow::BanditWindow(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), scores_label(nullptr), tryes_label(nullptr)
 {
+    scores_label = new QLabel(tr("Scores: "));
+    tryes_label  = new QLabel(tr("Tryes : "));
 
     set_pictures();
     set_labels();
 
     quit_button = new QPushButton(tr("&Quit"));
+    quit_button->sizeHint();
     start_game_button = new QPushButton(tr("Start Game"));
 
     connect(quit_button, SIGNAL(clicked()),
@@ -16,20 +23,23 @@ BanditWindow::BanditWindow(QWidget *parent) :
             this, SLOT(start_game()) );
 
     QHBoxLayout * horizontal_layout_1 = new QHBoxLayout;
-    for(int i = 0; i < 3; ++i)
+    for(int i = 0; i < label.size(); ++i)
     {
        horizontal_layout_1->addWidget(label.at(i));
     }
 
-    QHBoxLayout * horizontal_layout_2 = new QHBoxLayout;
+    QVBoxLayout * tryes_and_scores_layout = new QVBoxLayout;
+    tryes_and_scores_layout->addWidget(scores_label);
+    tryes_and_scores_layout->addWidget(tryes_label);
 
-    horizontal_layout_2->addWidget(quit_button);
-    horizontal_layout_2->addWidget(start_game_button);
+    QHBoxLayout * buttons_layout = new QHBoxLayout;
+    buttons_layout->addWidget(quit_button);
+    buttons_layout->addWidget(start_game_button);
 
     QGridLayout * main_layout = new QGridLayout;
-
-    main_layout->addLayout(horizontal_layout_1, 0, 0);
-    main_layout->addLayout(horizontal_layout_2, 1, 0);
+    main_layout->addLayout(horizontal_layout_1, 0, 1);
+    main_layout->addLayout(tryes_and_scores_layout, 1, 0);
+    main_layout->addLayout(buttons_layout, 1, 1);
 
     setLayout(main_layout);
     setWindowTitle(tr("one hand bandit"));
@@ -45,54 +55,47 @@ void BanditWindow::set_pictures(const int num_of_pictures)
     }
 }
 void BanditWindow::set_labels(const int lb_size)
-{
-    //QLabel temp;
+{    
     for(int i = 0; i < 3; ++i)
     {
         label.push_back(new QLabel);
         label[i]->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         label[i]->setMinimumSize(lb_size, lb_size);
+        label[i]->setMaximumSize(400, 400);
+
         if(!picture_path.at(i).isNull())
-        {
-            label[i]->setPixmap(QPixmap(picture_path.at(i)));
+        {            
+            label[i]->setPixmap(QPixmap(picture_path.at(i)).scaled(
+                                    label.at(i)->size(),
+                                        Qt::KeepAspectRatio,
+                                        Qt::SmoothTransformation));
         }
     }
 }
 // resize picture
 //void BanditWindow::resizeEvent(QResizeEvent *event)
 //{
-//    QWidget::resizeEvent(event);
+//   QWidget::resizeEvent(event);
+//   QPixmap temp;
 
-//    double width_ration =
+//   double width_ration =
 //            static_cast<double>(event->size().height()) / event->oldSize().height();
-//    double height_ration =
+//   double height_ration =
 //            static_cast<double>(event->size().width()) / event->oldSize().width();
-//    int new_width = label.at(0)->width() * width_ration;
-//    int new_height = label.at(0)->height() * height_ration;
 
-//    QVector<QLabel>::iterator lb_itr = label.begin();
-//    while(lb_itr != label.end())
-//    {
-//        if(lb_itr->pixmap())
-//        {
-//            lb_itr->setPixmap(lb_itr->ge);
-//        }
-//    }
-//    if(label_1->pixmap())
-//    {
-//        label_1->setPixmap(picture_1->scaled(new_width, new_height,
-//                                      Qt::KeepAspectRatio));
-//    }
-//    if(label_2->pixmap())
-//    {
-//        label_2->setPixmap(picture_2->scaled(new_width, new_height,
-//                                      Qt::KeepAspectRatio));
-//    }
-//    if(label_3->pixmap())
-//    {
-//        label_3->setPixmap(picture_3->scaled(new_width, new_height,
-//                                      Qt::KeepAspectRatio));
-//    }
+//   for(int i = 0; i < label.size(); ++i)
+//   {
+//       int new_width  = label.at(i)->width()  * width_ration;
+//       int new_height = label.at(i)->height() * height_ration;
+
+//       if(label.at(i)->pixmap())
+//       {
+//           temp = *label.at(i)->pixmap();
+//       }
+//            label[i]->setPixmap(temp.scaled(new_width, new_height,
+//                                    Qt::KeepAspectRatio,
+//                                    Qt::SmoothTransformation));
+//   }
 //}
 
 // quit
@@ -116,7 +119,13 @@ void BanditWindow::start_game()
         num_picture = static_cast<int>(qrand() % 5);
 
         if(!picture_path.at(num_picture).isNull())
-            label[num_label]->setPixmap(QPixmap(picture_path.at(num_picture)));
+        {
+            label[num_label]->setPixmap(QPixmap
+                            (picture_path.at(num_picture)).
+                                        scaled(label.at(num_label)->size(),
+                                                 Qt::KeepAspectRatio,
+                                                 Qt::SmoothTransformation));
+        }
     }
 }
 
