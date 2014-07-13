@@ -2,13 +2,13 @@
 
 // initial static variables
 int BanditWindow::scores_counter_ = 0;
-int BanditWindow::tryes_counter_ = 0;
+int BanditWindow::tryes_counter_ = 10;
 
 BanditWindow::BanditWindow(QWidget *parent) :
     QWidget(parent), scores_label(nullptr), tryes_label(nullptr)
 {
-    scores_label = new QLabel(tr("Scores: "));
-    tryes_label  = new QLabel(tr("Tryes : "));
+    scores_label = new QLabel("Scores: " + QString::number(scores_counter_));
+    tryes_label  = new QLabel("Tryes : " + QString::number(tryes_counter_));
 
     set_pictures();
     set_labels();
@@ -113,6 +113,10 @@ void BanditWindow::quit_game()
 // start game
 void BanditWindow::start_game()
 {
+    if(tryes_counter_)
+        tryes_counter_ -=1;
+    //else break;
+
     int num_picture = 0;
     for(int num_label = 0; num_label < 3; ++num_label)
     {
@@ -126,6 +130,11 @@ void BanditWindow::start_game()
                                                  Qt::KeepAspectRatio,
                                                  Qt::SmoothTransformation));
         }
+    }
+    if(label.at(0)->pixmap() == label.at(1)->pixmap())
+    {
+        scores_counter_ +=1;
+        scores_label +=1;
     }
 }
 
