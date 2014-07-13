@@ -32,8 +32,8 @@ private:
     QLabel *scores_label;
     QLabel *tryes_label;
 
-    static int scores_counter_;
-    static int tryes_counter_;
+    int scores_counter_;
+    int tryes_counter_;
 
     QVector<QLabel*> label;
     QVector<QString> picture_path;
@@ -42,7 +42,22 @@ private:
     QPushButton *start_game_button;
 
     void set_pictures(const int = 5);
-    void set_labels(const int lb_size = 100);
+    void set_labels(const int lb_size = 200);
+
+    void set_new_picture_in_label(const int, const int);
+
+
+    inline void increse_scores() { scores_counter_ += 1; }
+
+    inline void increse_tryes() { scores_counter_ += 1;}
+    inline void decrese_tryes() { tryes_counter_ -= 1;}
+
+    inline int get_scores() const {return scores_counter_;}
+    inline int get_tryes() const {return tryes_counter_;}
+
+    void set_new_score_label();
+    void set_new_tryes_label();
+    bool picture_coincidence(QVector<int> & random_number);
 
     //void set_picture(const int num_label, const int num_picture);
 };

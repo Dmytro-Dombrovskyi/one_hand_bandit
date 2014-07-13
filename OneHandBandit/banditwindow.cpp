@@ -1,14 +1,16 @@
 #include "banditwindow.h"
 
 // initial static variables
-int BanditWindow::scores_counter_ = 0;
-int BanditWindow::tryes_counter_ = 10;
+
 
 BanditWindow::BanditWindow(QWidget *parent) :
     QWidget(parent), scores_label(nullptr), tryes_label(nullptr)
 {
-    scores_label = new QLabel("Scores: " + QString::number(scores_counter_));
-    tryes_label  = new QLabel("Tryes : " + QString::number(tryes_counter_));
+    scores_counter_ = 0;
+    tryes_counter_ = 10;
+
+    scores_label = new QLabel("Score: " + QString::number(scores_counter_));
+    tryes_label  = new QLabel("Tryes: " + QString::number(tryes_counter_));
 
     set_pictures();
     set_labels();
@@ -33,6 +35,7 @@ BanditWindow::BanditWindow(QWidget *parent) :
     tryes_and_scores_layout->addWidget(tryes_label);
 
     QHBoxLayout * buttons_layout = new QHBoxLayout;
+    buttons_layout->addStretch();
     buttons_layout->addWidget(quit_button);
     buttons_layout->addWidget(start_game_button);
 
@@ -61,7 +64,7 @@ void BanditWindow::set_labels(const int lb_size)
         label.push_back(new QLabel);
         label[i]->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         label[i]->setMinimumSize(lb_size, lb_size);
-        label[i]->setMaximumSize(400, 400);
+        label[i]->setMaximumSize(lb_size, lb_size);
 
         if(!picture_path.at(i).isNull())
         {            
@@ -114,35 +117,65 @@ void BanditWindow::quit_game()
 void BanditWindow::start_game()
 {
     if(tryes_counter_)
-        tryes_counter_ -=1;
-    //else break;
-
-    int num_picture = 0;
-    for(int num_label = 0; num_label < 3; ++num_label)
     {
-        num_picture = static_cast<int>(qrand() % 5);
+        decrese_tryes();
+        set_new_tryes_label();
+        //set_new_picture_in_labels();
 
-        if(!picture_path.at(num_picture).isNull())
+        QVector<int> pictures_random_number(label.size());
+
+        int num_picture = 0;
+        for(int num_label = 0; num_label < label.size(); ++num_label)
         {
-            label[num_label]->setPixmap(QPixmap
-                            (picture_path.at(num_picture)).
-                                        scaled(label.at(num_label)->size(),
-                                                 Qt::KeepAspectRatio,
-                                                 Qt::SmoothTransformation));
+            num_picture = static_cast<int>(qrand() % 5);
+
+            pictures_random_number[num_label] = num_picture;
+            set_new_picture_in_label(num_label, num_picture);
         }
-    }
-    if(label.at(0)->pixmap() == label.at(1)->pixmap())
-    {
-        scores_counter_ +=1;
-        scores_label +=1;
+
+        if(picture_coincidence(pictures_random_number) == true)
+        {
+            increse_scores();
+            increse_tryes();
+            set_new_score_label();
+            set_new_tryes_label();
+        }
+
+//        if(0 == tryes_counter_)
+//        {
+//
+//        }
     }
 }
 
+void BanditWindow::set_new_score_label()
+{
+    scores_label->setText("Score: " + QString::number(get_scores()));
+}
 
+void BanditWindow::set_new_tryes_label()
+{
+    tryes_label->setText("Tryes: " + QString::number(get_tryes()));
+}
 
+void BanditWindow::set_new_picture_in_label(const int num_label,
+                                            const int num_picture)
+{
+    if(!picture_path.at(num_picture).isNull())
+    {
+        label[num_label]->setPixmap
+                (QPixmap(picture_path.at(num_picture))
+                 .scaled(label.at(num_label)->size(),
+                         Qt::KeepAspectRatio,
+                         Qt::SmoothTransformation));
+    }
+}
 
-
-
+bool BanditWindow::picture_coincidence(QVector<int> & random_number )
+{
+    return (random_number.at(0) == random_number.at(1) &&
+            random_number.at(0) == random_number.at(2));
+}
 
 
 
