@@ -1,22 +1,16 @@
 #include "banditwindow.h"
-
-// initial static variables
-
-
+int BanditWindow::scores_counter_ = 0;
+int BanditWindow::tryes_counter_ = 20;
 BanditWindow::BanditWindow(QWidget *parent) :
     QWidget(parent), scores_label(nullptr), tryes_label(nullptr)
 {
-    scores_counter_ = 0;
-    tryes_counter_ = 10;
-
     scores_label = new QLabel("Score: " + QString::number(scores_counter_));
     tryes_label  = new QLabel("Tryes: " + QString::number(tryes_counter_));
 
     set_pictures();
     set_labels();
 
-    quit_button = new QPushButton(tr("&Quit"));
-    quit_button->sizeHint();
+    quit_button = new QPushButton(tr("&Quit"));    
     start_game_button = new QPushButton(tr("Start Game"));
 
     connect(quit_button, SIGNAL(clicked()),
@@ -24,6 +18,33 @@ BanditWindow::BanditWindow(QWidget *parent) :
     connect(start_game_button, SIGNAL(clicked()),
             this, SLOT(start_game()) );
 
+    set_layouts();
+
+    setWindowTitle(tr("One hand bandit"));
+}
+
+
+// set pictures
+void BanditWindow::set_pictures(const int num_of_pictures)
+{
+    for(int i = 1; i <= num_of_pictures; ++i)
+    {
+        picture_path.push_back(":/images/images/belka_" +
+                               QString::number(i) + ".png");
+    }
+}
+void BanditWindow::set_labels(const int lb_numbers)
+{    
+    for(int i = 0; i < lb_numbers; ++i)
+    {
+        create_new_label();
+        set_new_picture_in_label(i, i);
+    }
+    set_labels_style();
+}
+
+void BanditWindow::set_layouts()
+{
     QHBoxLayout * horizontal_layout_1 = new QHBoxLayout;
     for(int i = 0; i < label.size(); ++i)
     {
@@ -35,46 +56,32 @@ BanditWindow::BanditWindow(QWidget *parent) :
     tryes_and_scores_layout->addWidget(tryes_label);
 
     QHBoxLayout * buttons_layout = new QHBoxLayout;
-    buttons_layout->addStretch();
+    //buttons_layout->addStretch(1);
     buttons_layout->addWidget(quit_button);
     buttons_layout->addWidget(start_game_button);
 
     QGridLayout * main_layout = new QGridLayout;
-    main_layout->addLayout(horizontal_layout_1, 0, 1);
+    main_layout->addLayout(horizontal_layout_1, 0, 0, 1, 3);
     main_layout->addLayout(tryes_and_scores_layout, 1, 0);
     main_layout->addLayout(buttons_layout, 1, 1);
 
     setLayout(main_layout);
-    setWindowTitle(tr("one hand bandit"));
 }
 
-// set pictures
-void BanditWindow::set_pictures(const int num_of_pictures)
+void BanditWindow::create_new_label()
 {
-    for(int i = 1; i <= num_of_pictures; ++i)
+    label.push_back(new QLabel());
+}
+void BanditWindow::set_labels_style()
+{
+    foreach(QLabel * temp, label)
     {
-        picture_path.push_back(":/images/images/belka_" +
-                               QString::number(i) + ".png");
+        temp->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+        temp->minimumSizeHint();
+        temp->maximumSize();
     }
 }
-void BanditWindow::set_labels(const int lb_size)
-{    
-    for(int i = 0; i < 3; ++i)
-    {
-        label.push_back(new QLabel);
-        label[i]->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-        label[i]->setMinimumSize(lb_size, lb_size);
-        label[i]->setMaximumSize(lb_size, lb_size);
 
-        if(!picture_path.at(i).isNull())
-        {            
-            label[i]->setPixmap(QPixmap(picture_path.at(i)).scaled(
-                                    label.at(i)->size(),
-                                        Qt::KeepAspectRatio,
-                                        Qt::SmoothTransformation));
-        }
-    }
-}
 // resize picture
 //void BanditWindow::resizeEvent(QResizeEvent *event)
 //{
@@ -112,50 +119,30 @@ void BanditWindow::quit_game()
     if(answer == QMessageBox::Yes)
         QApplication::instance()->quit();
 }
-
-// start game
-void BanditWindow::start_game()
+void BanditWindow::end_game()
 {
-    if(tryes_counter_)
+    QString message = "Your attmepts is over! ";
+    message.append(QString::number(get_scores()));
+    message.append(" times! Try again?");
+
+    QMessageBox::StandardButton answer =
+            QMessageBox::information(this, "Game over",
+                                     message,
+                                     QMessageBox::Yes |
+                                     QMessageBox::No);
+    if(answer == QMessageBox::Yes)
     {
-        decrese_tryes();
-        set_new_tryes_label();
-        //set_new_picture_in_labels();
-
-        QVector<int> pictures_random_number(label.size());
-
-        int num_picture = 0;
-        for(int num_label = 0; num_label < label.size(); ++num_label)
-        {
-            num_picture = static_cast<int>(qrand() % 5);
-
-            pictures_random_number[num_label] = num_picture;
-            set_new_picture_in_label(num_label, num_picture);
-        }
-
-        if(picture_coincidence(pictures_random_number) == true)
-        {
-            increse_scores();
-            increse_tryes();
-            set_new_score_label();
-            set_new_tryes_label();
-        }
-
-//        if(0 == tryes_counter_)
-//        {
-//
-//        }
+        reset_account();
     }
+    if(answer == QMessageBox::No)
+        QApplication::instance()->quit();
 }
 
-void BanditWindow::set_new_score_label()
+void BanditWindow::message_congratulation()
 {
-    scores_label->setText("Score: " + QString::number(get_scores()));
-}
-
-void BanditWindow::set_new_tryes_label()
-{
-    tryes_label->setText("Tryes: " + QString::number(get_tryes()));
+    QMessageBox::information(this, "Congratulation",
+                             "Congratulation!,"
+                             "You Win the round!");
 }
 
 void BanditWindow::set_new_picture_in_label(const int num_label,
@@ -171,12 +158,77 @@ void BanditWindow::set_new_picture_in_label(const int num_label,
     }
 }
 
-bool BanditWindow::picture_coincidence(QVector<int> & random_number )
+// start game
+void BanditWindow::start_game()
 {
-    return (random_number.at(0) == random_number.at(1) &&
-            random_number.at(0) == random_number.at(2));
+    if(tryes_counter_)
+    {
+        decrese_tryes();
+        set_new_tryes_label();
+
+
+        QVector<int> pictures_random_number(label.size());
+
+        int num_picture = 0;
+        for(int num_label = 0; num_label < label.size(); ++num_label)
+        {
+            num_picture = static_cast<int>(qrand() % 5);
+
+            pictures_random_number[num_label] = num_picture;
+            set_new_picture_in_label(num_label, num_picture);
+        }
+
+        if(picture_coincidence(pictures_random_number) == true)
+        {
+            set_win_round();
+        }
+
+        if(tryes_counter_ == 0)
+        {
+          end_game();
+        }
+    }
 }
 
+bool BanditWindow::picture_coincidence(QVector<int> & random_number )
+{
+    if(random_number.isEmpty()) return false;
+
+    int number = random_number.at(0);
+    foreach(int num_next, random_number)
+    {
+        if(number != num_next)
+            return false;
+    }
+    return true;
+}
+
+void BanditWindow::set_new_score_label()
+{
+    scores_label->setText("Score: " + QString::number(get_scores()));
+}
+
+void BanditWindow::set_new_tryes_label()
+{
+    tryes_label->setText("Tryes: " + QString::number(get_tryes()));
+}
+
+void BanditWindow::reset_account()
+{
+    reset_scores();
+    reset_tryes();
+    set_new_score_label();
+    set_new_tryes_label();
+}
+
+void BanditWindow::set_win_round()
+{
+    message_congratulation();
+    increse_scores();
+    increse_tryes();
+    set_new_score_label();
+    set_new_tryes_label();
+}
 
 
 
