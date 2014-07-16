@@ -26,17 +26,18 @@ public slots:
     void start_game();
 
 protected:
- //  void resizeEvent(QResizeEvent *event);
+  void resizeEvent(QResizeEvent *event);
 
 private:
     QLabel *scores_label;
     QLabel *tryes_label;
 
-    static int scores_counter_;
-    static int tryes_counter_;
+    int scores_counter_ = 0;
+    int tryes_counter_ = 20;
 
     QVector<QLabel*> label;
     QVector<QString> picture_path;
+    QVector<QPixmap> my_picture;
 
     QPushButton *quit_button;
     QPushButton *start_game_button;
@@ -44,7 +45,7 @@ private:
     void set_layouts();
     void create_new_label();
     void set_labels_style();
-    void set_pictures(const int = 5);
+    void set_pictures();
     void set_labels(const int lb_numbers = 3);
 
     void set_new_picture_in_label(const int, const int);
@@ -61,7 +62,7 @@ private:
     void set_new_score_label();
     void set_new_tryes_label();
 
-    bool picture_coincidence(QVector<int> & random_number);
+    bool picture_coincidence(const QVector<int> &number_arr);
 
     void end_game();
     void reset_account();

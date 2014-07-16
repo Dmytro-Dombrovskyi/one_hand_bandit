@@ -5,5 +5,15 @@
         <file>images/belka_3.png</file>
         <file>images/belka_2.png</file>
         <file>images/belka_1.png</file>
+        <file>images/cat.png</file>
+        <file>images/crocodile.png</file>
+        <file>images/elefant.png</file>
+        <file>images/fish.png</file>
+        <file>images/parrot.png</file>
+        <file>images/seagull.png</file>
+        <file>images/tiger.png</file>
+        <file>images/turkey.png</file>
+        <file>images/turtle.png</file>
+        <file>images/whit_wolf.png</file>
     </qresource>
 </RCC>
